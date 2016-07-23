@@ -679,6 +679,18 @@
     </profile>
 
     <profile>
+      <id>docker</id>
+      <properties>
+        <excludedGroups>
+          com.querydsl.core.testutil.Performance,
+
+          com.querydsl.core.testutil.SQLServer,
+          com.querydsl.core.testutil.Teradata
+        </excludedGroups>
+      </properties>
+    </profile>
+
+    <profile>
       <id>travis</id>
       <properties>
         <excludedGroups>
@@ -687,8 +699,7 @@
 
           com.querydsl.core.testutil.DB2,
           com.querydsl.core.testutil.SQLServer,
-          com.querydsl.core.testutil.Teradata,
-          com.querydsl.core.testutil.Oracle
+          com.querydsl.core.testutil.Teradata
         </excludedGroups>
       </properties>
       <build>

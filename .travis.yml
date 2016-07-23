@@ -3,25 +3,22 @@ jdk:
   - oraclejdk8
 services:
   - mongodb
-addons:
-  postgresql: "9.3"
+  - docker
 env:
   matrix:
     - MODULE=!querydsl-scala PROFILES=all,travis,examples
     - MODULE=!querydsl-jpa-codegen PROFILES=jpa,hibernate5,travis,examples
     - MODULE=querydsl-scala PROFILES=all,travis
 install:
-  - mvn -B -q --projects ${MODULE} -P${PROFILES} install -DskipTests=true
+  - ./mvnw -B -q --projects ${MODULE} -P${PROFILES} install -DskipTests=true
 before_script:
-  - mysql -u root -e "source travis/mysql.sql"
-  - psql -U postgres -f travis/postgresql.sql  
-  - psql -c 'create extension postgis;' -d querydsl -U postgres
-  - ./travis/cubrid.sh
-  - ./travis/firebird.sh
-script: mvn -B test -P${PROFILES} --projects ${MODULE} jacoco:report
+  - ./travis/docker_bootstrap.sh
+script:
+  - docker ps
+  - ./mvnw -B test -P${PROFILES} --projects ${MODULE} jacoco:report
 sudo: required
 after_success:
-  - mvn coveralls:report
+  - ./mvnw coveralls:report
 cache:
   directories:
     - $HOME/.m2

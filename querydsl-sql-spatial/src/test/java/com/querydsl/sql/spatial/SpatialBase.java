@@ -1,3 +1,4 @@
+
 package com.querydsl.sql.spatial;
 
 import static com.querydsl.core.Target.*;
@@ -238,6 +239,7 @@ public class SpatialBase extends AbstractBaseTest {
     }
 
     @Test
+    @ExcludeIn(MYSQL)
     public void point_methods2() {
         QShapes shapes1 = QShapes.shapes;
         QShapes shapes2 = new QShapes("shapes2");

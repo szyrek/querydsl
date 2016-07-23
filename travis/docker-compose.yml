@@ -1,0 +1,56 @@
+mysql:
+  image: mysql:latest
+  ports:
+    - "3306:3306"
+  volumes:
+    - ./mysql.sh:/docker-entrypoint-initdb.d/mysql.sh
+  environment:
+    - MYSQL_ROOT_PASSWORD=querydsl
+    - MYSQL_USER=querydsl
+    - MYSQL_PASSWORD=querydsl
+
+postgresql:
+  image: mdillon/postgis:latest
+  ports:
+    - "5433:5432"
+  volumes:
+    - ./postgresql.sql:/docker-entrypoint-initdb.d/postgresql.sql
+  environment:
+    - POSTGRES_USER=querydsl
+    - POSTGRES_PASSWORD=querydsl
+    - POSTGRES_DB=querydsl
+
+oracle:
+  image: wnameless/oracle-xe-11g:latest
+  ports:
+    - "1521:1521"
+
+cubrid:
+  image: lighthopper/cubrid:latest
+  ports:
+    - "33000:33000"
+    - "30000:30000"
+    - "8001:8001"
+    - "8002:8002"
+    - "1523:1523"
+
+mongo:
+  image: mongo:latest
+  ports:
+    - "27017:27017"
+
+db2:
+  image: ibmcom/db2express-c:latest
+  ports:
+    - "50000:50000"
+  environment:
+    - DB2INST1_PASSWORD=a3sd!fDj
+    - LICENSE=accept
+  command: db2start
+
+firebird:
+  image: jacobalberty/firebird:latest
+  ports:
+    - "3050:3050"
+  volumes:
+    - ./firebird.sql:/docker-entrypoint-initdb.d/firebird.sql
