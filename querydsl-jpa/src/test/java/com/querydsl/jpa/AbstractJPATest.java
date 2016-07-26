@@ -1682,7 +1682,7 @@ public abstract class AbstractJPATest {
     }
 
     @Test
-    @NoEclipseLink @NoOpenJPA @NoBatooJPA
+    @NoEclipseLink @NoOpenJPA @NoBatooJPA @NoHibernate
     public void test() {
         Cat kitten = savedCats.get(0);
         Cat noKitten = savedCats.get(savedCats.size() - 1);
@@ -1830,7 +1830,7 @@ public abstract class AbstractJPATest {
     }
 
     @Test
-    @ExcludeIn(DERBY)
+    @ExcludeIn({DERBY, ORACLE})
     public void byte_array() {
         QSimpleTypes simpleTypes = QSimpleTypes.simpleTypes;
         assertEquals(ImmutableList.of(), query().from(simpleTypes)
