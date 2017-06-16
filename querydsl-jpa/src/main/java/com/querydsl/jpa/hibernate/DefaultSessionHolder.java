@@ -13,15 +13,11 @@
  */
 package com.querydsl.jpa.hibernate;
 
-import static com.querydsl.jpa.hibernate.SessionHolder.MethodHack.hackMethod;
-
 import java.lang.reflect.InvocationTargetException;
 
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-
-import com.google.common.reflect.Invokable;
 
 /**
  * {@code DefaultSessionHolder} is the default implementation of the {@link SessionHolder} interface
@@ -30,9 +26,6 @@ import com.google.common.reflect.Invokable;
  *
  */
 public class DefaultSessionHolder implements SessionHolder {
-
-    private static final Invokable<Session, Query> createQuery = hackMethod(Query.class, Session.class, "createQuery");
-    private static final Invokable<Session, SQLQuery> createSqlQuery = hackMethod(SQLQuery.class, Session.class, "createSQLQuery");
 
     private final Session session;
 
@@ -43,7 +36,7 @@ public class DefaultSessionHolder implements SessionHolder {
     @Override
     public Query createQuery(String queryString) {
         try {
-            return createQuery.invoke(session, queryString);
+            return MethodHack.createQuery.invoke(session, queryString);
         } catch (InvocationTargetException ex) {
             throw new RuntimeException(ex);
         } catch (IllegalAccessException ex) {
@@ -54,7 +47,7 @@ public class DefaultSessionHolder implements SessionHolder {
     @Override
     public SQLQuery createSQLQuery(String queryString) {
         try {
-            return createSqlQuery.invoke(session, queryString);
+            return MethodHack.createSqlQuery.invoke(session, queryString);
         } catch (InvocationTargetException ex) {
             throw new RuntimeException(ex);
         } catch (IllegalAccessException ex) {

@@ -15,6 +15,7 @@ package com.querydsl.jpa.hibernate;
 
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.hibernate.SharedSessionContract;
 
 import com.google.common.reflect.Invokable;
 
@@ -34,8 +35,11 @@ public interface SessionHolder {
      */
     public static class MethodHack {
 
+        public static final Invokable<SharedSessionContract, Query> createQuery = hackMethod(Query.class, SharedSessionContract.class, "createQuery");
+        public static final Invokable<SharedSessionContract, SQLQuery> createSqlQuery = hackMethod(SQLQuery.class, SharedSessionContract.class, "createSQLQuery");
+
         @SuppressWarnings("unchecked") // carefully coded
-        public static <T, R> Invokable<T, R> hackMethod(Class<R> returnType, Class<T> declaringType, String methodName) {
+        private static <T, R> Invokable<T, R> hackMethod(Class<R> returnType, Class<T> declaringType, String methodName) {
             try {
                 return (Invokable<T, R>) Invokable.from(declaringType.getMethod(methodName, String.class))
                         .returning(returnType); // not totally necessary, but just a sanity check to fail fast
