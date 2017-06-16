@@ -16,6 +16,8 @@ package com.querydsl.jpa.hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 
+import com.google.common.reflect.Invokable;
+
 /**
  * Abstraction for different Hibernate Session signatures
  *
@@ -23,6 +25,27 @@ import org.hibernate.SQLQuery;
  *
  */
 public interface SessionHolder {
+
+    /**
+     * Workaround for Hibernate 5.2's return type changes.
+     *
+     * Because we can't have the return type in source code form, we have to use reflection.
+     * This means that the method lookup happens just by name.
+     */
+    public static class MethodHack {
+
+        @SuppressWarnings("unchecked") // carefully coded
+        public static <T, R> Invokable<T, R> hackMethod(Class<R> returnType, Class<T> declaringType, String methodName) {
+            try {
+                return (Invokable<T, R>) Invokable.from(declaringType.getMethod(methodName, String.class))
+                        .returning(returnType); // not totally necessary, but just a sanity check to fail fast
+            } catch (NoSuchMethodException ex) {
+                throw new RuntimeException(ex);
+            } catch (SecurityException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 
     /**
      * Create a JPQL query for the given query string
