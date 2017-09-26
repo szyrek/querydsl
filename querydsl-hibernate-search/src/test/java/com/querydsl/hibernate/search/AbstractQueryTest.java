@@ -42,7 +42,7 @@ public abstract class AbstractQueryTest {
         AnnotationConfiguration cfg = new AnnotationConfiguration();
         cfg.addAnnotatedClass(User.class);
         Properties props = new Properties();
-        InputStream is = SearchQueryTest.class.getResourceAsStream("/derby.properties");
+        InputStream is = AbstractQueryTest.class.getResourceAsStream("/derby.properties");
         try {
             props.load(is);
         } finally {
