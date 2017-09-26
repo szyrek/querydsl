@@ -18,12 +18,27 @@ import static com.querydsl.apt.APTOptions.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.*;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeMirror;
@@ -36,7 +51,14 @@ import com.mysema.codegen.JavaWriter;
 import com.mysema.codegen.model.Parameter;
 import com.mysema.codegen.model.Type;
 import com.mysema.codegen.model.TypeCategory;
-import com.querydsl.codegen.*;
+import com.querydsl.codegen.Delegate;
+import com.querydsl.codegen.EntityType;
+import com.querydsl.codegen.Property;
+import com.querydsl.codegen.QueryTypeFactory;
+import com.querydsl.codegen.Serializer;
+import com.querydsl.codegen.SerializerConfig;
+import com.querydsl.codegen.Supertype;
+import com.querydsl.codegen.TypeMappings;
 import com.querydsl.core.annotations.QueryDelegate;
 import com.querydsl.core.annotations.QueryDelegateSource;
 import com.querydsl.core.annotations.QueryExclude;
@@ -479,7 +501,7 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
 
     private HashSet<Element> findQueryDelegates() {
         HashSet<Element> delegateMethods = new HashSet<Element>(getElements(QueryDelegate.class));
-        
+
         // Search elements that are not part of the compiled sources, but are references by a QueryDelegateSource
         // annotation. This fixes a problem, that query delegation methods were not generated, when the class
         // containing the method was not part of an incremental compile.
