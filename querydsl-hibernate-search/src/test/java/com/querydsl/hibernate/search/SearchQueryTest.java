@@ -24,8 +24,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.querydsl.core.NonUniqueResultException;
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 public class SearchQueryTest extends AbstractQueryTest {
@@ -58,12 +56,6 @@ public class SearchQueryTest extends AbstractQueryTest {
     public void notExists() {
         assertFalse(query().where(user.emailAddress.eq("bob@example.com")).fetchCount() == 0);
         assertTrue(query().where(user.emailAddress.eq("bobby@example.com")).fetchCount() == 0);
-    }
-
-    @Test
-    public void count() {
-        BooleanExpression filter = user.emailAddress.eq("bob@example.com");
-        assertEquals(1, query().where(filter).fetchCount());
     }
 
     @Test
@@ -105,37 +97,6 @@ public class SearchQueryTest extends AbstractQueryTest {
         List<String> desc = getFirstNames(query().where(filter).orderBy(
                 user.firstName.desc()).fetch());
         assertEquals(Arrays.asList("Robert", "John", "Barbara", "Anton"), desc);
-    }
-
-    @Test
-    public void paging() {
-        BooleanExpression filter = user.middleName.eq("X");
-        OrderSpecifier<?> order = user.firstName.asc();
-
-        // limit
-        List<String> limit = getFirstNames(query().where(filter).orderBy(order)
-                .limit(2).fetch());
-        assertEquals(Arrays.asList("Anton", "Barbara"), limit);
-
-        // offset
-        List<String> offset = getFirstNames(query().where(filter)
-                .orderBy(order).offset(1).fetch());
-        assertEquals(Arrays.asList("Barbara", "John", "Robert"), offset);
-
-        // limit + offset
-        List<String> limitAndOffset = getFirstNames(query().where(filter)
-                .orderBy(order).limit(2).offset(1).fetch());
-        assertEquals(Arrays.asList("Barbara", "John"), limitAndOffset);
-    }
-
-    @Test
-    public void listResults() {
-        BooleanExpression filter = user.middleName.eq("X");
-        QueryResults<User> users = query().where(filter).orderBy(
-                user.firstName.asc()).limit(2).fetchResults();
-        List<String> asc = getFirstNames(users.getResults());
-        assertEquals(Arrays.asList("Anton", "Barbara"), asc);
-        assertEquals(4, users.getTotal());
     }
 
     @Test
