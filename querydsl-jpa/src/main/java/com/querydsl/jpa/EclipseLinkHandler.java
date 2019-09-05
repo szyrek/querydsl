@@ -19,8 +19,8 @@ import java.util.Iterator;
 
 import javax.persistence.Query;
 
+import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
-import org.eclipse.persistence.config.ResultSetType;
 import org.eclipse.persistence.jpa.JpaQuery;
 import org.eclipse.persistence.queries.Cursor;
 
@@ -36,56 +36,73 @@ import com.querydsl.core.types.FactoryExpression;
  */
 class EclipseLinkHandler implements QueryHandler {
 
-    @Override
-    public void addEntity(Query query, String alias, Class<?> type) {
-        // do nothing
-    }
+	@Override
+	public void addEntity(Query query, String alias, Class<?> type) {
+		// do nothing
+	}
 
-    @Override
-    public void addScalar(Query query, String alias, Class<?> type) {
-        // do nothing
-    }
+	@Override
+	public void addScalar(Query query, String alias, Class<?> type) {
+		// do nothing
+	}
 
-    @Override
-    public boolean createNativeQueryTyped() {
-        return true;
-    }
+	@Override
+	public boolean createNativeQueryTyped() {
+		return true;
+	}
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> CloseableIterator<T> iterate(Query query, FactoryExpression<?> projection) {
-        Iterator<T> iterator = null;
-        Closeable closeable = null;
-        if (query instanceof JpaQuery) {
-            JpaQuery<T> elQuery = (JpaQuery<T>) query;
-            elQuery.setHint(QueryHints.RESULT_SET_TYPE, ResultSetType.ForwardOnly);
-            elQuery.setHint(QueryHints.SCROLLABLE_CURSOR, true);
-            final Cursor cursor = elQuery.getResultCursor();
-            closeable = new Closeable() {
-                @Override
-                public void close() throws IOException {
-                    cursor.close();
-                }
-            };
-            iterator = cursor;
-        } else {
-            iterator = query.getResultList().iterator();
-        }
-        if (projection != null) {
-            return new TransformingIterator<T>(iterator, closeable, projection);
-        } else {
-            return new IteratorAdapter<T>(iterator, closeable);
-        }
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> CloseableIterator<T> iterate(Query query, FactoryExpression<?> projection) {
+		Iterator<T> iterator = null;
+		Closeable closeable = null;
+		if (query instanceof JpaQuery) {
+			query.setHint(QueryHints.CURSOR, HintValues.TRUE);
+			final Cursor cursor = (Cursor) query.getSingleResult();
+			final int pageSize = cursor.getPageSize();
+			closeable = new Closeable() {
 
-    @Override
-    public boolean transform(Query query, FactoryExpression<?> projection) {
-        return false;
-    }
+				@Override
+				public void close() throws IOException {
+					cursor.close();
+				}
+			};
+			iterator = new Iterator<T>() {
 
-    @Override
-    public boolean wrapEntityProjections() {
-        return false;
-    }
+				private int rowsSinceLastClear = 0;
+
+				@Override
+				public boolean hasNext() {
+					return cursor.hasNext();
+				}
+
+				@Override
+				public T next() {
+					if (rowsSinceLastClear++ == pageSize) {
+						rowsSinceLastClear = 0;
+						cursor.clear();
+					}
+					return (T) cursor.next();
+				}
+			};
+		} else {
+			iterator = query.getResultList().iterator();
+		}
+		if (projection != null) {
+			return new TransformingIterator<T>(iterator, closeable, projection);
+		} else {
+			return new IteratorAdapter<T>(iterator, closeable);
+		}
+	}
+
+	@Override
+	public boolean transform(Query query, FactoryExpression<?> projection) {
+		return false;
+	}
+
+	@Override
+	public boolean wrapEntityProjections() {
+		return false;
+	}
 
 }
