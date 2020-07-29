@@ -68,7 +68,7 @@ public class JPAQueryFactoryTest {
 
     @Test
     public void query2() {
-        queryFactory2.query().from(QAnimal.animal);
+        queryFactory2.query().from(QAnimal.Constants.animal);
     }
 
     @Test
@@ -78,25 +78,25 @@ public class JPAQueryFactoryTest {
         EasyMock.expect(mock.getDelegate()).andReturn(mock).atLeastOnce();
         EasyMock.replay(mock, factoryMock);
 
-        queryFactory3.query().from(QAnimal.animal);
+        queryFactory3.query().from(QAnimal.Constants.animal);
 
         EasyMock.verify(mock, factoryMock);
     }
 
     @Test
     public void from() {
-        assertNotNull(queryFactory.from(QAnimal.animal));
+        assertNotNull(queryFactory.from(QAnimal.Constants.animal));
     }
 
     @Test
     public void delete() {
-        assertNotNull(queryFactory.delete(QAnimal.animal));
+        assertNotNull(queryFactory.delete(QAnimal.Constants.animal));
     }
 
     @Test
     public void delete2() {
-        queryFactory2.delete(QAnimal.animal)
-            .where(QAnimal.animal.bodyWeight.gt(0));
+        queryFactory2.delete(QAnimal.Constants.animal)
+            .where(QAnimal.Constants.animal.bodyWeight.gt(0));
     }
 
     @Test
@@ -106,21 +106,21 @@ public class JPAQueryFactoryTest {
         EasyMock.expect(mock.getDelegate()).andReturn(mock).atLeastOnce();
         EasyMock.replay(mock, factoryMock);
 
-        assertNotNull(queryFactory3.delete(QAnimal.animal));
+        assertNotNull(queryFactory3.delete(QAnimal.Constants.animal));
 
         EasyMock.verify(mock, factoryMock);
     }
 
     @Test
     public void update() {
-        assertNotNull(queryFactory.update(QAnimal.animal));
+        assertNotNull(queryFactory.update(QAnimal.Constants.animal));
     }
 
     @Test
     public void update2() {
-        queryFactory2.update(QAnimal.animal)
-            .set(QAnimal.animal.birthdate, new Date())
-            .where(QAnimal.animal.birthdate.isNull());
+        queryFactory2.update(QAnimal.Constants.animal)
+            .set(QAnimal.Constants.animal.birthdate, new Date())
+            .where(QAnimal.Constants.animal.birthdate.isNull());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class JPAQueryFactoryTest {
         EasyMock.expect(mock.getDelegate()).andReturn(mock).atLeastOnce();
         EasyMock.replay(mock, factoryMock);
 
-        assertNotNull(queryFactory3.update(QAnimal.animal));
+        assertNotNull(queryFactory3.update(QAnimal.Constants.animal));
 
         EasyMock.verify(mock, factoryMock);
     }

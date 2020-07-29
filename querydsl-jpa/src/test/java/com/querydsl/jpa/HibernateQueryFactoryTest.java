@@ -47,17 +47,17 @@ public class HibernateQueryFactoryTest {
 
     @Test
     public void from() {
-        assertNotNull(queryFactory.from(QAnimal.animal));
+        assertNotNull(queryFactory.from(QAnimal.Constants.animal));
     }
 
     @Test
     public void delete() {
-        assertNotNull(queryFactory.delete(QAnimal.animal));
+        assertNotNull(queryFactory.delete(QAnimal.Constants.animal));
     }
 
     @Test
     public void update() {
-        assertNotNull(queryFactory.update(QAnimal.animal));
+        assertNotNull(queryFactory.update(QAnimal.Constants.animal));
     }
 
 }

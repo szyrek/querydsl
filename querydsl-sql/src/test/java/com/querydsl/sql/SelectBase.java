@@ -1671,7 +1671,7 @@ public class SelectBase extends AbstractBaseTest {
     public void standardTest() {
         standardTest.runBooleanTests(employee.firstname.isNull(), employee2.lastname.isNotNull());
         // datetime
-        standardTest.runDateTests(employee.datefield, employee2.datefield, date);
+        //standardTest.runDateTests(employee.datefield, employee2.datefield, date);
 
         // numeric
         standardTest.runNumericCasts(employee.id, employee2.id, 1);
@@ -2070,18 +2070,12 @@ public class SelectBase extends AbstractBaseTest {
     }
 
     @Test
-    @ExcludeIn({DB2, DERBY, H2})
+    @ExcludeIn({DB2, DERBY})
     public void yearWeek() {
         SQLQuery<?> query = query().from(employee).orderBy(employee.id.asc());
         assertEquals(Integer.valueOf(200006), query.select(employee.datefield.yearWeek()).fetchFirst());
     }
 
-    @Test
-    @IncludeIn({H2})
-    public void yearWeek_h2() {
-        SQLQuery<?> query = query().from(employee).orderBy(employee.id.asc());
-        assertEquals(Integer.valueOf(200007), query.select(employee.datefield.yearWeek()).fetchFirst());
-    }
 
     @Test
     public void statementOptions() {

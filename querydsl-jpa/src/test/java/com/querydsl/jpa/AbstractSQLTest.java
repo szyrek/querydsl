@@ -61,7 +61,7 @@ public abstract class AbstractSQLTest {
     @Test
     public void enum_binding() {
         List<Cat> cats = query().from(cat)
-                .select(Projections.bean(Cat.class, QCat.cat.color)).fetch();
+                .select(Projections.bean(Cat.class, QCat.Constants.cat.color)).fetch();
         assertFalse(cats.isEmpty());
 
         for (Cat cat : cats) {
@@ -83,7 +83,7 @@ public abstract class AbstractSQLTest {
 
     @Test
     public void entityQueries() {
-        QCat catEntity = QCat.cat;
+        QCat catEntity = QCat.Constants.cat;
 
         List<Cat> cats = query().from(cat).orderBy(cat.name.asc()).select(catEntity).fetch();
         assertEquals(6, cats.size());
@@ -95,7 +95,7 @@ public abstract class AbstractSQLTest {
     @Test
     public void entityQueries2() {
         SAnimal mate = new SAnimal("mate");
-        QCat catEntity = QCat.cat;
+        QCat catEntity = QCat.Constants.cat;
 
         List<Cat> cats = query().from(cat)
                 .innerJoin(mate).on(cat.mateId.eq(mate.id))
@@ -114,7 +114,7 @@ public abstract class AbstractSQLTest {
     @NoBatooJPA
     @NoEclipseLink
     public void entityQueries4() {
-        QCat catEntity = QCat.cat;
+        QCat catEntity = QCat.Constants.cat;
         List<Tuple> cats = query().from(cat).select(catEntity, cat.name, cat.id).fetch();
         assertEquals(6, cats.size());
 
@@ -129,7 +129,7 @@ public abstract class AbstractSQLTest {
     @NoBatooJPA
     @NoEclipseLink
     public void entityQueries5() {
-        QCat catEntity = QCat.cat;
+        QCat catEntity = QCat.Constants.cat;
         SAnimal otherCat = new SAnimal("otherCat");
         QCat otherCatEntity = new QCat("otherCat");
         List<Tuple> cats = query().from(cat, otherCat).select(catEntity, otherCatEntity).fetch();
@@ -145,7 +145,7 @@ public abstract class AbstractSQLTest {
     @NoBatooJPA
     @NoEclipseLink
     public void entityQueries6() {
-        QCat catEntity = QCat.cat;
+        QCat catEntity = QCat.Constants.cat;
         List<CatDTO> results = query().from(cat).select(Projections.constructor(CatDTO.class, catEntity)).fetch();
         assertEquals(6, results.size());
 
@@ -156,7 +156,7 @@ public abstract class AbstractSQLTest {
 
     @Test
     public void entityQueries7() {
-        QCompany company = QCompany.company;
+        QCompany company = QCompany.Constants.company;
         assertEquals(Arrays.asList(),
                 query().from(company).select(company.officialName).fetch());
     }

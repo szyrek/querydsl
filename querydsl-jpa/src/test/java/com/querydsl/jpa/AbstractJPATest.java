@@ -58,11 +58,11 @@ public abstract class AbstractJPATest {
 
     private static final Expression<?>[] NO_EXPRESSIONS = new Expression<?>[0];
 
-    private static final QCompany company = QCompany.company;
+    private static final QCompany company = QCompany.Constants.company;
 
-    private static final QAnimal animal = QAnimal.animal;
+    private static final QAnimal animal = QAnimal.Constants.animal;
 
-    private static final QCat cat = QCat.cat;
+    private static final QCat cat = QCat.Constants.cat;
 
     private static final QCat otherCat = new QCat("otherCat");
 
@@ -280,7 +280,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoBatooJPA
     public void any_in3() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
         assertFalse(query().from(employee).where(
                 employee.jobFunctions.any().in(JobFunction.CODER, JobFunction.CONSULTANT))
                 .select(employee).fetch().isEmpty());
@@ -309,7 +309,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void as() {
-        assertTrue(query().from(QAnimal.animal.as(QCat.class)).fetchCount() > 0);
+        assertTrue(query().from(QAnimal.Constants.animal.as(QCat.class)).fetchCount() > 0);
     }
 
     @Test
@@ -553,7 +553,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void contains_ic() {
-        QFoo foo = QFoo.foo;
+        QFoo foo = QFoo.Constants.foo;
         assertEquals(1, query().from(foo).where(foo.bar.containsIgnoreCase("München")).fetchCount());
     }
 
@@ -574,7 +574,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void contains4() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
         assertEquals(Arrays.asList(),
                 query().from(employee)
                         .where(
@@ -586,13 +586,13 @@ public abstract class AbstractJPATest {
 
     @Test
     public void count() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertTrue(query().from(show).fetchCount() > 0);
     }
 
     @Test
     public void count_distinct() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         query().from(cat)
                .groupBy(cat.id)
                .select(cat.id, cat.breed.countDistinct()).fetch();
@@ -602,7 +602,7 @@ public abstract class AbstractJPATest {
     @NoBatooJPA
     @NoHibernate
     public void count_distinct2() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         query().from(cat)
                .groupBy(cat.id)
                .select(cat.id, cat.birthdate.dayOfMonth().countDistinct()).fetch();
@@ -611,7 +611,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoEclipseLink
     public void distinct_orderBy() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         List<Tuple> result = query().select(cat.id, cat.mate.id)
                 .distinct()
                 .from(cat)
@@ -633,7 +633,7 @@ public abstract class AbstractJPATest {
     @NoHibernate
     @ExcludeIn(MYSQL)
     public void distinct_orderBy2() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         List<Tuple> result = query().select(cat.id, cat.mate.id)
                 .distinct()
                 .from(cat)
@@ -787,7 +787,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoBatooJPA
     public void enum_in2() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
 
         JPQLQuery<?> query = query();
         query.from(employee).where(employee.lastName.eq("Smith"), employee.jobFunctions
@@ -804,7 +804,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoEclipseLink(HSQLDB)
     public void factoryExpressions() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         QCat cat2 = new QCat("cat2");
         QCat kitten = new QCat("kitten");
         JPQLQuery<Tuple> query = query().from(cat)
@@ -818,7 +818,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoEclipseLink @NoOpenJPA @NoBatooJPA
     public void fetch() {
-        QMammal mammal = QMammal.mammal;
+        QMammal mammal = QMammal.Constants.mammal;
         QHuman human = new QHuman("mammal");
         query().from(mammal)
             .leftJoin(human.hairs).fetchJoin()
@@ -828,8 +828,8 @@ public abstract class AbstractJPATest {
     @Test
     @NoEclipseLink @NoOpenJPA @NoBatooJPA
     public void fetch2() {
-        QWorld world = QWorld.world;
-        QMammal mammal = QMammal.mammal;
+        QWorld world = QWorld.Constants.world;
+        QMammal mammal = QMammal.Constants.mammal;
         QHuman human = new QHuman("mammal");
         query().from(world)
             .leftJoin(world.mammals, mammal).fetchJoin()
@@ -841,8 +841,8 @@ public abstract class AbstractJPATest {
     @ExcludeIn({MYSQL, DERBY})
     @NoBatooJPA
     public void groupBy() {
-        QAuthor author = QAuthor.author;
-        QBook book = QBook.book;
+        QAuthor author = QAuthor.Constants.author;
+        QBook book = QBook.Constants.book;
 
         for (int i = 0; i < 10; i++) {
             Author a = new Author();
@@ -1014,20 +1014,20 @@ public abstract class AbstractJPATest {
 
     @Test
     public void instanceOf_entity1() {
-        QEntity1 entity1 = QEntity1.entity1;
+        QEntity1 entity1 = QEntity1.Constants.entity1;
         assertEquals(2L, query().from(entity1).where(entity1.instanceOf(Entity1.class)).fetchCount());
     }
 
     @Test
     public void instanceOf_entity2() {
-        QEntity1 entity1 = QEntity1.entity1;
+        QEntity1 entity1 = QEntity1.Constants.entity1;
         assertEquals(1L, query().from(entity1).where(entity1.instanceOf(Entity2.class)).fetchCount());
     }
 
     @Test
     @NoHibernate // https://hibernate.atlassian.net/browse/HHH-6686
     public void isEmpty_elementCollection() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
         assertEquals(0, query().from(employee).where(employee.jobFunctions.isEmpty()).fetchCount());
     }
 
@@ -1040,8 +1040,8 @@ public abstract class AbstractJPATest {
     @NoEclipseLink
     @ExcludeIn({ORACLE, TERADATA})
     public void joinEmbeddable() {
-        QBookVersion bookVersion = QBookVersion.bookVersion;
-        QBookMark bookMark = QBookMark.bookMark;
+        QBookVersion bookVersion = QBookVersion.Constants.bookVersion;
+        QBookMark bookMark = QBookMark.Constants.bookMark;
 
         assertEquals(Arrays.asList(),
                 query().from(bookVersion)
@@ -1088,7 +1088,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void list_elementCollection_of_enum() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
         //QJobFunction jobFunction = QJobFunction.jobFunction;
         EnumPath<JobFunction> jobFunction = Expressions.enumPath(JobFunction.class, "jf");
 
@@ -1100,7 +1100,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoBatooJPA
     public void list_elementCollection_of_string() {
-        QFoo foo = QFoo.foo;
+        QFoo foo = QFoo.Constants.foo;
         StringPath str = Expressions.stringPath("str");
 
         List<String> strings = query().from(foo).innerJoin(foo.names, str).select(str).fetch();
@@ -1112,41 +1112,41 @@ public abstract class AbstractJPATest {
     @Test
     @NoEclipseLink(HSQLDB)
     public void list_order_get() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         assertEquals(6, query().from(cat).orderBy(cat.kittens.get(0).name.asc()).fetch().size());
     }
 
     @Test
     @NoEclipseLink(HSQLDB)
     public void list_order_get2() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         assertEquals(6, query().from(cat).orderBy(cat.mate.kittens.get(0).name.asc()).fetch().size());
     }
 
     @Test
     public void map_get() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(Arrays.asList("A"), query().from(show).select(show.acts.get("a")).fetch());
     }
 
     @Test
     @NoHibernate
     public void map_get2() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(1, query().from(show).where(show.acts.get("a").eq("A")).fetchCount());
     }
 
     @Test
     @NoEclipseLink
     public void map_order_get() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(1, query().from(show).orderBy(show.parent.acts.get("A").asc()).fetch().size());
     }
 
     @Test
     @NoEclipseLink
     public void map_order_get2() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         QShow parent = new QShow("parent");
         assertEquals(1, query().from(show).leftJoin(show.parent, parent)
                 .orderBy(parent.acts.get("A").asc()).fetch().size());
@@ -1154,50 +1154,50 @@ public abstract class AbstractJPATest {
 
     @Test
     public void map_containsKey() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(1L, query().from(show).where(show.acts.containsKey("a")).fetchCount());
     }
 
     @Test
     public void map_containsKey2() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(1L, query().from(show).where(show.acts.containsKey("b")).fetchCount());
     }
 
     @Test
     public void map_containsKey3() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(0L, query().from(show).where(show.acts.containsKey("c")).fetchCount());
     }
 
     @Test
     public void map_containsValue() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(1L, query().from(show).where(show.acts.containsValue("A")).fetchCount());
     }
 
     @Test
     public void map_containsValue2() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(1L, query().from(show).where(show.acts.containsValue("B")).fetchCount());
     }
 
     @Test
     public void map_containsValue3() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(0L, query().from(show).where(show.acts.containsValue("C")).fetchCount());
     }
 
     @Test
     public void map_contains() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         assertEquals(1L, query().from(show).where(show.acts.contains("a", "A")).fetchCount());
         assertEquals(0L, query().from(show).where(show.acts.contains("X", "X")).fetchCount());
     }
 
     @Test
     public void map_groupBy() {
-      QShow show = QShow.show;
+      QShow show = QShow.Constants.show;
       assertEquals(1, query().from(show).select(show.acts.get("X")).groupBy(show.acts.get("a")).fetchCount());
     }
 
@@ -1205,7 +1205,7 @@ public abstract class AbstractJPATest {
     @Ignore
     public void map_join() {
         //select m.text from Show s join s.acts a where key(a) = 'B'
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         StringPath act = Expressions.stringPath("act");
         assertEquals(Arrays.asList(), query().from(show).join(show.acts, act).select(act).fetch());
     }
@@ -1283,7 +1283,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoEclipseLink
     public void numeric() {
-        QNumeric numeric = QNumeric.numeric;
+        QNumeric numeric = QNumeric.Constants.numeric;
         BigDecimal singleResult = query().from(numeric).select(numeric.value).fetchFirst();
         assertEquals(26.9, singleResult.doubleValue(), 0.001);
     }
@@ -1306,8 +1306,8 @@ public abstract class AbstractJPATest {
 
     @Test
     public void one_to_one() {
-        QEmployee employee = QEmployee.employee;
-        QUser user = QUser.user;
+        QEmployee employee = QEmployee.Constants.employee;
+        QUser user = QUser.Constants.user;
 
         JPQLQuery<?> query = query();
         query.from(employee);
@@ -1465,7 +1465,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void subQuery() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         QShow show2 = new QShow("show2");
         assertEquals(0,
                 query().from(show).where(select(show2.count()).from(show2)
@@ -1474,7 +1474,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void subQuery2() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         QCat other = new QCat("other");
         assertEquals(savedCats, query().from(cat)
                 .where(cat.name.in(select(other.name).from(other)
@@ -1485,7 +1485,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void subQuery3() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         QCat other = new QCat("other");
         assertEquals(savedCats.subList(0, 1), query().from(cat)
                 .where(cat.name.eq(select(other.name).from(other)
@@ -1495,7 +1495,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void subQuery4() {
-        QCat cat = QCat.cat;
+        QCat cat = QCat.Constants.cat;
         QCat other = new QCat("other");
         query().from(cat)
                 .select(cat.name, select(other.count()).from(other).where(other.name.eq(cat.name))).fetch();
@@ -1503,7 +1503,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void subQuery5() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
         QEmployee employee2 = new QEmployee("e2");
         assertEquals(2, query().from(employee)
                 .where(select(employee2.id.count()).from(employee2).gt(1L))
@@ -1521,7 +1521,7 @@ public abstract class AbstractJPATest {
     @NoBatooJPA
     @ExcludeIn(ORACLE)
     public void substring2() {
-        QCompany company = QCompany.company;
+        QCompany company = QCompany.Constants.company;
         StringExpression name = company.name;
         Integer companyId = query().from(company).select(company.id).fetchFirst();
         JPQLQuery<?> query = query().from(company).where(company.id.eq(companyId));
@@ -1609,7 +1609,7 @@ public abstract class AbstractJPATest {
 
     @Test
     public void sum_5() {
-        QShow show = QShow.show;
+        QShow show = QShow.Constants.show;
         Long lng = query().from(show).select(show.id.sum()).fetchFirst();
         assertNotNull(lng);
     }
@@ -1807,7 +1807,7 @@ public abstract class AbstractJPATest {
     @Test
     @NoBatooJPA
     public void treat() {
-        QDomesticCat domesticCat = QDomesticCat.domesticCat;
+        QDomesticCat domesticCat = QDomesticCat.Constants.domesticCat;
         assertEquals(0, query().from(cat)
                 .innerJoin(cat.mate, domesticCat._super)
                 .where(domesticCat.name.eq("Bobby"))
@@ -1832,7 +1832,7 @@ public abstract class AbstractJPATest {
     @Test
     @ExcludeIn(DERBY)
     public void byte_array() {
-        QSimpleTypes simpleTypes = QSimpleTypes.simpleTypes;
+        QSimpleTypes simpleTypes = QSimpleTypes.Constants.simpleTypes;
         assertEquals(ImmutableList.of(), query().from(simpleTypes)
                 .where(simpleTypes.byteArray.eq(new byte[]{0, 1})).select(simpleTypes).fetch());
     }

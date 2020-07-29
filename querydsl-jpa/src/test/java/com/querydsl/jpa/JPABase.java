@@ -53,7 +53,7 @@ import com.querydsl.jpa.testutil.JPATestRunner;
 @RunWith(JPATestRunner.class)
 public class JPABase extends AbstractJPATest implements JPATest {
 
-    private static final QCat cat = QCat.cat;
+    private static final QCat cat = QCat.Constants.cat;
 
     @Rule
     @ClassRule
@@ -105,7 +105,7 @@ public class JPABase extends AbstractJPATest implements JPATest {
 
     @Test
     public void delete2() {
-        assertEquals(0, delete(QGroup.group).execute());
+        assertEquals(0, delete(QGroup.Constants.group).execute());
     }
 
     @Test
@@ -137,8 +137,8 @@ public class JPABase extends AbstractJPATest implements JPATest {
     @Test
     @NoBatooJPA
     public void delete_where_subQuery2() {
-        QChild child = QChild.child;
-        QParent parent = QParent.parent;
+        QChild child = QChild.Constants.child;
+        QParent parent = QParent.Constants.parent;
 
         JPQLQuery<?> subQuery = selectFrom(parent)
             .where(parent.id.eq(2),

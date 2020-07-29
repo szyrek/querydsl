@@ -146,7 +146,7 @@ public class JPQLSerializerTest {
 
     @Test
     public void delete_clause_uses_dELETE_fROM() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
         JPQLSerializer serializer = new JPQLSerializer(HQLTemplates.DEFAULT);
         QueryMetadata md = new DefaultQueryMetadata();
         md.addJoin(JoinType.DEFAULT, employee);
@@ -245,8 +245,8 @@ public class JPQLSerializerTest {
         JPQLSerializer serializer = new JPQLSerializer(HQLTemplates.DEFAULT);
         QueryMetadata md = new DefaultQueryMetadata();
         md.addJoin(JoinType.DEFAULT, cat);
-        md.addJoin(JoinType.JOIN, cat.mate.as((Path) QDomesticCat.domesticCat));
-        md.setProjection(QDomesticCat.domesticCat);
+        md.addJoin(JoinType.JOIN, cat.mate.as((Path) QDomesticCat.Constants.domesticCat));
+        md.setProjection(QDomesticCat.Constants.domesticCat);
         serializer.serialize(md, false, null);
         assertEquals("select domesticCat\n" +
                 "from Cat cat\n" +

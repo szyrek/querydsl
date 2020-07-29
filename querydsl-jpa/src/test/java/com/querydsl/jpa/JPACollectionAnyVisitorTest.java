@@ -30,7 +30,7 @@ import com.querydsl.jpa.domain.QEmployee;
 
 public class JPACollectionAnyVisitorTest {
 
-    private QCat cat = QCat.cat;
+    private QCat cat = QCat.Constants.cat;
 
     @Test
     public void path() {
@@ -44,7 +44,7 @@ public class JPACollectionAnyVisitorTest {
 
     @Test
     public void nested_any_booleanOperation() {
-        QCompany company = QCompany.company;
+        QCompany company = QCompany.Constants.company;
         Predicate predicate = company.departments.any().employees.any().firstName.eq("Bob");
         assertEquals("exists (select 1\n" +
                 "from company.departments as company_departments_0\n" +
@@ -71,7 +71,7 @@ public class JPACollectionAnyVisitorTest {
 
     @Test
     public void simple_booleanOperation_elementCollection() {
-        QEmployee employee = QEmployee.employee;
+        QEmployee employee = QEmployee.Constants.employee;
         Predicate predicate = employee.jobFunctions.any().stringValue().eq("CODER");
         assertEquals("exists (select 1\n" +
                 "from Employee employee_1463394548\n" +
@@ -113,7 +113,7 @@ public class JPACollectionAnyVisitorTest {
 //        query.where(anyDog.gender.eq("M"));
 //        List<Person> foundOwners = query.fetch(QPerson.person);
 
-        QDomesticCat anyCat = QCat.cat.kittens.any().as(QDomesticCat.class);
+        QDomesticCat anyCat = QCat.Constants.cat.kittens.any().as(QDomesticCat.class);
         Predicate predicate = anyCat.name.eq("X");
 
         assertEquals("exists (select 1\n" +

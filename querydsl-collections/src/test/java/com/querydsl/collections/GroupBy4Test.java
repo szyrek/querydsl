@@ -37,7 +37,7 @@ public class GroupBy4Test {
         data.add(new Table("3", "abc", "555"));
         data.add(new Table("3", "pqr", "666"));
 
-        QGroupBy4Test_Table table = QGroupBy4Test_Table.table;
+        QGroupBy4Test_Table table = QGroupBy4Test_Table.Constants.table;
         Map<String, Map<String, String>> grouped = CollQueryFactory
                 .from(table, data)
                 .transform(groupBy(table.col1).as(map(table.col2, table.col3)));
