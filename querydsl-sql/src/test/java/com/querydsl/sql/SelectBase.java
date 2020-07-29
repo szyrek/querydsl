@@ -2070,7 +2070,7 @@ public class SelectBase extends AbstractBaseTest {
     }
 
     @Test
-    @ExcludeIn({DB2, DERBY})
+    @ExcludeIn({DB2, DERBY, H2})
     public void yearWeek() {
         SQLQuery<?> query = query().from(employee).orderBy(employee.id.asc());
         assertEquals(Integer.valueOf(200006), query.select(employee.datefield.yearWeek()).fetchFirst());
