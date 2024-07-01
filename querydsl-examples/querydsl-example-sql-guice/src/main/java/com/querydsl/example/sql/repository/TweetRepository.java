@@ -11,7 +11,7 @@ import java.util.List;
 import static com.querydsl.example.sql.model.QLocation.location;
 import static com.querydsl.example.sql.model.QTweet.tweet;
 import static com.querydsl.example.sql.model.QTweetUser.tweetUser;
-import static com.querydsl.example.sql.model.QUser.user;
+import static com.querydsl.example.sql.model.QUser.Constants.user;
 
 public class TweetRepository extends AbstractRepository {
     @Transactional

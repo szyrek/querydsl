@@ -8,7 +8,7 @@ import com.querydsl.example.sql.model.User;
 import java.util.List;
 
 import static com.querydsl.example.sql.model.QTweet.tweet;
-import static com.querydsl.example.sql.model.QUser.user;
+import static com.querydsl.example.sql.model.QUser.Constants.user;
 
 public class UserRepository extends AbstractRepository {
     @Transactional
