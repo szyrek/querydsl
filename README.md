@@ -1,5 +1,35 @@
 ## Querydsl
 
+** How to do HL fixes **
+
+- Create brach.
+- Set version.
+
+```BASH
+mvn versions:set \
+	-DnewVersion=5.0.2.HL-SNAPSHOT \
+	-DgroupId=com.querydsl \
+	-DartifactId=querydsl-root \
+	-DupdateMatchingVersions=false \
+	-DgenerateBackupPoms=false \
+	-DprocessAllModules=true
+```
+
+- Make actual change.
+- Build the project until success.
+
+```BASH
+  mvn package \
+    -DdependenciesRepository=https://artifactory.hlag.altemista.cloud/artifactory/querydsl-dependencies/ \
+    -Pquickbuild,all
+```
+
+- Push branch to github.
+- Change branch in [Querydsl Jenkins Job](https://jenkins.hlag.altemista.cloud/job/QueryDsl/configure).
+- Run job.
+- Use new version.
+
+
 Querydsl is a framework which enables the construction of type-safe SQL-like queries for multiple backends including JPA, MongoDB and SQL in Java.
 
 Instead of writing queries as inline strings or externalizing them into XML files they are constructed via a fluent API.
