@@ -346,6 +346,7 @@ public class DefaultEntitySerializer implements EntitySerializer {
 				writer.append("    public static final class Constants {\n  ");
         writer.publicStaticFinal(queryType, simpleName, NEW + queryType.getSimpleName() + "(\"" + alias + "\")");
 				writer.append("    }\n");
+        writer.publicStaticFinal(queryType, simpleName, "Constants." + simpleName);
     }
 
     protected void introFactoryMethods(CodeWriter writer, final EntityType model) throws IOException {
