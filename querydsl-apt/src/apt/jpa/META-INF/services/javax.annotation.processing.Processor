@@ -1,1 +1,2 @@
 com.querydsl.apt.jpa.JPAAnnotationProcessor
+com.querydsl.apt.FISQuerydslProcessor

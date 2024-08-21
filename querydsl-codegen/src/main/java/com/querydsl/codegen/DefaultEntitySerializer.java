@@ -27,6 +27,7 @@ import com.querydsl.codegen.utils.CodeWriter;
 import com.querydsl.codegen.utils.model.*;
 import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.*;
+import com.querydsl.codegen.FISGenerated;
 
 /**
  * {@code EntitySerializer} is a {@link Serializer} implementation for entity types
