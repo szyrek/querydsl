@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -30,6 +31,7 @@ import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic.Kind;
+import javax.tools.JavaFileObject;
 
 import com.querydsl.codegen.utils.JavaWriter;
 import com.querydsl.codegen.utils.model.Parameter;
@@ -96,6 +98,18 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
 
         // serialize created types
         serializeMetaTypes();
+
+        System.err.println("Before");
+
+        try {
+            generateQClassesInitializer();
+            System.err.println("Win");
+        } catch (IOException e) {
+            System.err.println("Failed to write QClasses initializer, reason: " + e.getMessage());
+            e.printStackTrace();
+            System.err.println("Fail");
+        }
+        System.err.println("After");
 
         return ALLOW_OTHER_PROCESSORS_TO_CLAIM_ANNOTATIONS;
     }
@@ -657,4 +671,71 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
 
     protected abstract Configuration createConfiguration(RoundEnvironment roundEnv);
 
+
+    private boolean canAccessType(String typeName) {
+        return this.processingEnv
+                .getElementUtils()
+                .getTypeElement(typeName) != null;
+    }
+
+    private boolean canAccessEJBTypes() {
+        return canAccessType("jakarta.ejb.Singleton") &&
+                canAccessType("jakarta.ejb.Startup");
+    }
+
+    private List<String> getQClassesToInitialize(RoundEnvironment roundEnv) {
+        return Stream.concat(
+                context.embeddableTypes.values().stream(),
+                context.entityTypes.values().stream())
+                .map(entityType-> getQClassName(entityType))
+                .collect(Collectors.toList());
+    }
+
+    private String getQClassName(EntityType element) {
+        String packageName = element.getPackageName();
+        String simpleName = element.getSimpleName();
+        return (packageName.isEmpty() ? "" : packageName + ".Q") + simpleName;
+    }
+
+    public Optional<String> findValidPackageName(List<String> classNames) {
+        return classNames.stream()
+                .map(className -> {
+                    int lastDotIndex = className.lastIndexOf('.');
+                    return (lastDotIndex > 0) ? className.substring(0, lastDotIndex) : null;
+                })
+                .filter(packageName -> packageName != null)
+                .findFirst();
+    }
+
+    private void generateQClassesInitializer() throws IOException {
+        List<String> qClassesToInit = getQClassesToInitialize(roundEnv);
+        if (!canAccessEJBTypes() || qClassesToInit.isEmpty()) {
+            return;
+        }
+        String fisAllowedPackageName = findValidPackageName(qClassesToInit).orElseThrow();
+        JavaFileObject loaderFile = processingEnv.getFiler().createSourceFile(fisAllowedPackageName + ".QClassesInitializer");
+        try (Writer writer = loaderFile.openWriter()) {
+            writer.write("package "+ fisAllowedPackageName +";\n\n");
+            writer.write("import jakarta.ejb.Singleton;\n");
+            writer.write("import jakarta.ejb.Startup;\n");
+            writer.write("import javax.annotation.processing.Generated;\n\n");
+            writer.write("@Singleton\n");
+            writer.write("@Startup\n");
+            writer.write("@Generated(\"FIS\")\n");
+            writer.write("public class QClassesInitializer {\n");
+            writer.write("\tpublic void tryLoad(String className) {\n");
+            writer.write("\t\ttry {\n");
+            writer.write("\t\t\tClass.forName(className);\n");
+            writer.write("\t\t} catch (Exception e) {\n");
+            writer.write("\t\t\te.printStackTrace();\n");
+            writer.write("\t\t}\n");
+            writer.write("\t}\n");
+            writer.write("\tpublic QClassesInitializer() {\n");
+            for (String qClassName : qClassesToInit) {
+                writer.write("\t\ttryLoad(\"" + qClassName + "\");\n");
+            }
+            writer.write("\t}\n");
+            writer.write("}\n");
+        }
+    }
 }
