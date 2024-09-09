@@ -102,7 +102,6 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
         try {
             generateQClassesInitializer();
         } catch (IOException e) {
-            System.err.println("Failed to write QClasses initializer, reason: " + e.getMessage());
             throw new RuntimeException("Failed to write QClasses initializer", e);
         }
 
