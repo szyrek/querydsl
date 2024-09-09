@@ -103,7 +103,7 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
             generateQClassesInitializer();
         } catch (IOException e) {
             System.err.println("Failed to write QClasses initializer, reason: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException("Failed to write QClasses initializer", e);
         }
 
         return ALLOW_OTHER_PROCESSORS_TO_CLAIM_ANNOTATIONS;
@@ -707,7 +707,11 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
         if (!canAccessEJBTypes() || qClassesToInit.isEmpty()) {
             return;
         }
-        String fisAllowedPackageName = findValidPackageName(qClassesToInit).orElseThrow();
+        Optional<String> fisAllowedPackage = findValidPackageName(qClassesToInit);
+        if (!fisAllowedPackage.isPresent()) {
+            throw new IOException("Failed to find a FIS-valid package name amongst QClasses.");
+        }
+        String fisAllowedPackageName = findValidPackageName(qClassesToInit).get();
         JavaFileObject loaderFile = processingEnv.getFiler().createSourceFile(fisAllowedPackageName + ".QClassesInitializer");
         try (Writer writer = loaderFile.openWriter()) {
             writer.write("package "+ fisAllowedPackageName +";\n\n");
