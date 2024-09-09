@@ -99,17 +99,12 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
         // serialize created types
         serializeMetaTypes();
 
-        System.err.println("Before");
-
         try {
             generateQClassesInitializer();
-            System.err.println("Win");
         } catch (IOException e) {
             System.err.println("Failed to write QClasses initializer, reason: " + e.getMessage());
             e.printStackTrace();
-            System.err.println("Fail");
         }
-        System.err.println("After");
 
         return ALLOW_OTHER_PROCESSORS_TO_CLAIM_ANNOTATIONS;
     }
