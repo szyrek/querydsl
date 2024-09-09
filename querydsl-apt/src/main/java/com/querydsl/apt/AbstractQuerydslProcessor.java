@@ -71,7 +71,7 @@ public abstract class AbstractQuerydslProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         setLogInfo();
-        System.out.println("Running " + getClass().getSimpleName());
+        logInfo("Running " + getClass().getSimpleName());
 
         if (roundEnv.processingOver() || annotations.size() == 0) {
             return ALLOW_OTHER_PROCESSORS_TO_CLAIM_ANNOTATIONS;
